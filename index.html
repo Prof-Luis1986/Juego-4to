@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ElectroReto 4to</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="titlebar">
+      <div class="title">ElectroReto 4to</div>
+      <div class="subtitle">Aprender electronica basica jugando</div>
+    </header>
+
+    <section id="gamesSection" class="moduleMenu">
+      <button id="menuPlatformBtn" type="button">Módulo Plataformas</button>
+      <button id="menuStrategyBtn" type="button" class="ghost">Módulo Estrategia</button>
+      <button id="menuAdventureBtn" type="button" class="ghost">Módulo Aventura Blockly</button>
+      <button id="fullscreenToggleBtn" type="button" class="ghost">Pantalla completa</button>
+    </section>
+
+    <div id="gameWrap">
+      <canvas id="game" width="960" height="540" aria-label="Juego de plataformas"></canvas>
+
+      <div id="hud">
+        <div>🧠 Nivel <span id="levelText">1</span></div>
+        <div>⭐ Objetivo <span id="coinText">0</span>/<span id="coinTotal">0</span></div>
+        <div>❤️ Vidas <span id="livesText">3</span></div>
+        <div>⏱ Tiempo <span id="timeText">00:00</span>/60:00</div>
+        <div id="weaponHud">
+          <img id="weaponIcon" alt="Arma actual" />
+          <span id="weaponText">Puños</span>
+        </div>
+      </div>
+
+      <div id="toast" aria-live="polite"></div>
+
+      <div id="startScreen" class="overlay show">
+        <div class="panel startPanel">
+          <div class="startContent">
+            <h1>Bienvenidos, 4to</h1>
+            <p>Salta, recolecta monedas y resuelve retos de electronica basica para avanzar.</p>
+            <p>Tipo de juego:</p>
+            <div id="gameTypeSelect" class="playerSelect">
+              <button id="gameTypePlatform" class="playerCard selected" type="button">Plataformas</button>
+              <button id="gameTypeStrategy" class="playerCard" type="button">Estrategia por mundos</button>
+              <button id="gameTypeAdventure" class="playerCard" type="button">Aventura Blockly</button>
+            </div>
+            <div id="platformConfig">
+            <p>Modo:</p>
+            <div id="modeSelect" class="playerSelect">
+              <button id="modeBasic" class="playerCard selected" type="button">Básico</button>
+              <button id="modeIntermediate" class="playerCard" type="button">Intermedio</button>
+            </div>
+            <p>Nivel inicial:</p>
+            <div id="levelSelect" class="levelSelect"></div>
+            <ul>
+              <li>⬅ ➡ o A D para moverte</li>
+              <li>Espacio o W para saltar</li>
+              <li>F o J para atacar</li>
+              <li>E para cambiar herramienta</li>
+              <li>Shift para dash</li>
+              <li>En algunos retos deberás presionar una secuencia de teclas</li>
+            </ul>
+            </div>
+            <div id="strategyConfig" class="hidden">
+              <p>Juego estratégico por turnos:</p>
+              <ul>
+                <li>1-10 fácil, 11-30 medio y 31-50 difícil</li>
+                <li>Del 31 al 50 aparecen mini-jefes tácticos</li>
+                <li>Cada mundo cambia de bioma: Pradera, Cuevas, Ruinas, Volcán y Castillo</li>
+                <li>Volcán: casillas calientes cambian por turnos</li>
+                <li>Cuevas: visibilidad reducida alrededor del jugador</li>
+                <li>Castillo: puertas móviles se abren y cierran</li>
+                <li>Modo maratón: si llegas al 50 antes de 60:00 siguen saliendo mundos</li>
+                <li>Orbe oculto por nivel: al recogerlo, usa X para bomba de humo táctica</li>
+                <li>Usa flechas o WASD para moverte por la cuadrícula</li>
+                <li>Recoge todas las gemas para abrir salida táctica</li>
+                <li>Busca la llave para atravesar puertas bloqueadas</li>
+                <li>Los enemigos se mueven después de tu turno: planifica</li>
+              </ul>
+            </div>
+            <div id="adventureConfig" class="hidden">
+              <p>Juego aventura creado con Blockly:</p>
+              <ul>
+                <li>Al elegir este modo y pulsar Jugar, se abre el Constructor de Mundos</li>
+                <li>Modo guiado: completa ejercicios con bloques y gana puntos</li>
+                <li>Modo libre: construye tu mundo desde cero en cuadrícula</li>
+                <li>Ejecuta en vivo para validar tu solución como en Hour of Code</li>
+                <li>Cuando esté listo, conviértelo a un nivel jugable</li>
+              </ul>
+            </div>
+            <p>Elige tu personaje:</p>
+            <div id="playerSelect" class="playerSelect"></div>
+          </div>
+          <div class="startActions">
+            <button id="startBtn">Jugar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="challengeModal" class="overlay">
+        <div class="panel">
+          <h2>Reto de lógica</h2>
+          <h3 id="challengeTopicTitle" class="challengeTopicTitle"></h3>
+          <p id="challengeTopicText" class="challengeTopicText"></p>
+          <p id="challengePrompt"></p>
+          <pre id="challengeCode"></pre>
+          <div id="challengeInputs">
+            <div id="textAnswer" class="answerBlock">
+              <input id="challengeInput" type="text" autocomplete="off" placeholder="Escribe tu respuesta" />
+            </div>
+            <div id="multiAnswer" class="answerBlock">
+              <div id="choiceButtons"></div>
+            </div>
+            <div id="orderAnswer" class="answerBlock">
+              <div id="orderChoices"></div>
+              <div id="orderSelected" class="hint"></div>
+              <button id="orderClear" class="ghost">Limpiar orden</button>
+            </div>
+            <div id="debugAnswer" class="answerBlock">
+              <input id="debugInput" type="text" autocomplete="off" placeholder="Escribe la linea corregida" />
+            </div>
+            <div id="keySequenceAnswer" class="answerBlock">
+              <p class="hint">Presiona la secuencia con el teclado (flechas, espacio, F/J, Shift).</p>
+              <div id="keySequenceProgress" class="keySequenceProgress"></div>
+              <button id="keySequenceReset" class="ghost" type="button">Reiniciar secuencia</button>
+            </div>
+          </div>
+          <div class="row">
+            <button id="checkAnswer">Comprobar</button>
+            <button id="closeChallenge" class="ghost">Cancelar</button>
+            <button id="speakLesson" class="ghost">Escuchar tema</button>
+            <button id="speakChallenge" class="ghost">Escuchar</button>
+            <button id="showHint" class="ghost">Pista</button>
+          </div>
+          <p id="challengeHint" class="hint"></p>
+        </div>
+      </div>
+
+      <div id="winScreen" class="overlay">
+        <div class="panel">
+          <h1>¡Excelente trabajo!</h1>
+          <p id="winText">Terminaste todos los niveles y resolviste los retos.</p>
+          <button id="restartBtn">Jugar de nuevo</button>
+        </div>
+      </div>
+    </div>
+
+    <footer id="notes">
+      <div id="noteGoal">Objetivo: recolecta todas las monedas y llega a la bandera para desbloquear el reto.</div>
+      <div id="noteLearn">Aprendizajes: LED, resistencias, Ley de Ohm, serie y paralelo.</div>
+    </footer>
+
+    <section id="builderLinkSection">
+      <div class="panel">
+        <h2>Constructor de Mundos (4to)</h2>
+        <p>Puedes usar tambien el constructor por bloques para crear niveles y practicar pensamiento logico.</p>
+        <div class="row">
+          <button id="openBuilderPage" type="button" class="openBuilderLink" onclick="window.location.href='builder.html'">
+            Abrir Constructor de Mundos
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

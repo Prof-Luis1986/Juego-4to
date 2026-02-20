@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Constructor de Mundos - 3ro</title>
+  <link rel="stylesheet" href="builder.css" />
+</head>
+<body>
+  <div id="builderApp">
+    <header class="topBar">
+      <div>
+        <h1>Constructor de Mundos</h1>
+        <p>Programa con bloques, construye tu mapa y completa la misión de 60 minutos.</p>
+      </div>
+      <div class="topBarStats">
+        <div class="stat">⏱ Tiempo: <span id="sessionTime">00:00</span>/60:00</div>
+        <div class="stat">⭐ Puntos: <span id="pointsText">0</span></div>
+        <div class="stat">🏅 Misión <span id="missionNumber">1</span>/12</div>
+        <button id="builderFullscreenBtn" class="ghost" type="button">Pantalla completa</button>
+        <button class="ghostLink" type="button" onclick="window.location.href='index.html'">Volver al juego</button>
+        <button class="mainBtn" type="button" onclick="window.location.href='index.html#gamesSection'">Ir a sección principal</button>
+      </div>
+    </header>
+
+    <section id="missionCard" class="missionCard">
+      <h2 id="missionTitle">Misión 1: Crea un camino</h2>
+      <p id="missionInstruction">Pon inicio, pon meta y crea al menos 4 plataformas para conectar el camino.</p>
+      <p id="missionStory" class="missionStory">Historia: El pueblo necesita un camino seguro para comenzar la aventura.</p>
+      <p id="missionChecklist" class="checklist">Checklist: Inicio 0/1 | Meta 0/1 | Plataformas 0/4 | Camino conectado: No</p>
+      <div class="steps">
+        <div>1. Arrastra bloques al espacio de trabajo (derecha).</div>
+        <div>2. Pulsa Ejecutar para construir el mapa en la cuadrícula.</div>
+        <div>3. Pulsa Jugar mi mundo para ver al personaje moverse.</div>
+        <div>4. Si falla, cambia bloques y vuelve a probar.</div>
+      </div>
+      <div class="miniGuide">
+        <div><strong>¿Qué bloque uso primero?</strong> Poner inicio.</div>
+        <div><strong>¿Después?</strong> Colocar plataformas para formar camino.</div>
+        <div><strong>¿Final?</strong> Poner meta y probar.</div>
+      </div>
+      <div class="missionActions">
+        <button id="hintBtn" class="ghost" type="button">💡 Pista</button>
+        <button id="runBtn" type="button">Ejecutar</button>
+        <button id="stepBtn" class="ghost" type="button">Paso a paso</button>
+        <button id="resetBtn" class="ghost" type="button">Reiniciar</button>
+        <button id="nextMissionBtn" type="button" disabled>Siguiente misión</button>
+      </div>
+      <div class="funBar">
+        <p id="flashChallenge" class="flashChallenge">Reto flash: Coloca 3 plataformas para ganar +5 puntos.</p>
+        <p id="streakText" class="streakText">Racha: 0</p>
+        <p id="coachText" class="coachText">Coach: ¡Vamos, constructor! Tu mundo puede ser épico.</p>
+        <div class="arcadeRow">
+          <label class="miniControl">
+            Avatar
+            <select id="avatarSelect">
+              <option value="1">Héroe Azul</option>
+              <option value="2">Héroe Verde</option>
+              <option value="4">Héroe Rojo</option>
+              <option value="5">Héroe Naranja</option>
+            </select>
+          </label>
+          <button id="surpriseBtn" class="ghost" type="button">🎁 Caja sorpresa</button>
+          <span id="surpriseText" class="surpriseText">Sorpresa lista</span>
+        </div>
+        <div class="levelTrack">
+          <span>Nivel constructor <strong id="builderLevelText">1</strong></span>
+          <div class="levelBar"><div id="levelFill" class="levelFill"></div></div>
+        </div>
+        <div id="badgeList" class="badgeList">
+          <span id="badgeBuilder" class="badge lock">Primer Constructor</span>
+          <span id="badgeExplorer" class="badge lock">Explorador de Fondos</span>
+          <span id="badgeHero" class="badge lock">Héroe Imparable</span>
+        </div>
+      </div>
+      <div class="guideBox">
+        <h3>Guía en texto y audio</h3>
+        <p id="guideText" class="guideText">
+          1) Arrastra bloques al espacio de trabajo. 2) Pulsa Ejecutar. 3) Si falla, cambia tu programa y vuelve a intentar.
+        </p>
+        <div class="guideActions">
+          <button id="guideSpeakBtn" class="ghost" type="button">🔊 Escuchar guía</button>
+          <button id="guideStopBtn" class="ghost" type="button">⏹ Detener audio</button>
+          <button id="guideRepeatBtn" class="ghost" type="button">🔁 Repetir guía</button>
+          <label class="narrationToggle">
+            <input id="autoNarration" type="checkbox" checked />
+            Narración automática
+          </label>
+        </div>
+      </div>
+      <p id="feedbackText" class="feedback">Listo para construir.</p>
+    </section>
+
+    <section class="workspaceWrap">
+      <aside class="stagePanel">
+        <h3>Escenario</h3>
+        <p id="cursorHelp" class="cursorHelp">
+          Cursor constructor: <strong>(2,9)</strong>. Puedes moverlo con flechas. En construcción fácil, clic en cuadrícula coloca bloques.
+        </p>
+        <div class="paintHelp">
+          Construcción fácil (recomendada): elige herramienta y haz clic en la cuadrícula. Usa "Mover cursor" si solo quieres moverlo.
+        </div>
+        <div id="paintTools" class="paintTools" aria-label="Herramientas de construcción rápida"></div>
+        <div class="cursorControls" aria-label="Controles del cursor">
+          <button id="cursorLeftBtn" class="ghost cursorBtn" type="button" aria-label="Mover cursor a la izquierda">←</button>
+          <button id="cursorUpBtn" class="ghost cursorBtn" type="button" aria-label="Mover cursor arriba">↑</button>
+          <button id="cursorDownBtn" class="ghost cursorBtn" type="button" aria-label="Mover cursor abajo">↓</button>
+          <button id="cursorRightBtn" class="ghost cursorBtn" type="button" aria-label="Mover cursor a la derecha">→</button>
+        </div>
+        <canvas id="stage" width="420" height="420" aria-label="Escenario de cuadrícula"></canvas>
+        <div class="legend">
+          <span>🟩 Plataforma</span>
+          <span>🪙 Moneda</span>
+          <span>👾 Enemigo</span>
+          <span>🟦 Inicio</span>
+          <span>🟪 Meta</span>
+          <span>🛑 Trampa</span>
+          <span>⚡ Turbo</span>
+          <span>💧 Agua</span>
+          <span>🌱 Tierra</span>
+          <span>🔥 Fuego</span>
+          <span>🗑 Obstáculo</span>
+        </div>
+        <div class="levelOptions">
+          <h4>Opciones del nivel</h4>
+          <label>
+            Fondo
+            <select id="bgThemeSelect">
+              <option value="sky">Cielo</option>
+              <option value="forest">Bosque</option>
+              <option value="lava">Volcán</option>
+              <option value="space">Espacio</option>
+              <option value="classic">Clásico</option>
+            </select>
+          </label>
+          <label>
+            Enemigos
+            <select id="enemyModeSelect">
+              <option value="static">Quietos</option>
+              <option value="patrol">Patrulla</option>
+            </select>
+          </label>
+          <label>
+            Velocidad enemigos
+            <select id="enemySpeedSelect">
+              <option value="1">Normal</option>
+              <option value="2">Rápida</option>
+            </select>
+          </label>
+          <label class="optCheck"><input id="musicToggle" type="checkbox" checked /> Música</label>
+          <label class="optCheck"><input id="sfxToggle" type="checkbox" checked /> Efectos</label>
+        </div>
+      </aside>
+
+      <div class="blockArea">
+        <section class="panel">
+          <h3>Bloques</h3>
+          <p class="small">Tip: también puedes hacer click para agregar un bloque.</p>
+          <div id="blockPalette" class="palette" aria-label="Paleta de bloques"></div>
+        </section>
+
+        <section class="panel">
+          <h3>Espacio de trabajo</h3>
+          <p class="small flowHelp">
+            Importante: en <strong>Construcción fácil</strong>, cada clic en la cuadrícula agrega bloques al programa automáticamente.
+          </p>
+          <div id="programArea" class="programArea" aria-label="Espacio de trabajo de bloques"></div>
+          <div class="row">
+            <button id="clearProgramBtn" class="ghost" type="button">Limpiar programa</button>
+            <button id="playWorldBtn" type="button">Jugar mi mundo (yo controlo)</button>
+            <button class="mainBtn inlineMainBtn" type="button" onclick="window.location.href='index.html#gamesSection'">
+              Volver a principal
+            </button>
+          </div>
+          <p class="small">Controles al jugar: Flechas o WASD para mover.</p>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <script src="builder.js"></script>
+</body>
+</html>
