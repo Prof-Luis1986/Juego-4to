@@ -1386,35 +1386,35 @@ const strategyBiomes = [
 const platformScenes = [
   {
     name: "Aula Digital",
-    skyA: "#85c8ff",
-    skyB: "#2f5f9a",
+    circuitA: "#83bfd8",
+    circuitB: "#264f73",
     fog: "rgba(220, 245, 255, 0.3)",
     platformTop: "#3d6b87",
     platformSide: "#204053",
-    deco: "clouds",
+    deco: "bus",
   },
   {
     name: "Biblioteca Tech",
-    skyA: "#f5d8a3",
-    skyB: "#b76f3f",
+    circuitA: "#d9c193",
+    circuitB: "#8a5f38",
     fog: "rgba(255, 234, 200, 0.25)",
     platformTop: "#866b45",
     platformSide: "#5f4527",
-    deco: "books",
+    deco: "chip",
   },
   {
     name: "Laboratorio Retro",
-    skyA: "#a7ffc8",
-    skyB: "#327a5d",
+    circuitA: "#9ae0bb",
+    circuitB: "#2f6a51",
     fog: "rgba(210, 255, 235, 0.26)",
     platformTop: "#4f8471",
     platformSide: "#285848",
-    deco: "tubes",
+    deco: "traces",
   },
   {
     name: "Ciudad Pixel",
-    skyA: "#f9a4b2",
-    skyB: "#654191",
+    circuitA: "#df9fcb",
+    circuitB: "#4f3c80",
     fog: "rgba(255, 212, 224, 0.2)",
     platformTop: "#6b5d9f",
     platformSide: "#3b2f6b",
@@ -1422,17 +1422,17 @@ const platformScenes = [
   },
   {
     name: "Museo Gamer",
-    skyA: "#f2ef8b",
-    skyB: "#4f5aa1",
+    circuitA: "#d4d27f",
+    circuitB: "#454f84",
     fog: "rgba(245, 245, 180, 0.22)",
     platformTop: "#6a709f",
     platformSide: "#3f456d",
-    deco: "beams",
+    deco: "pulse",
   },
   {
     name: "Futuro IA",
-    skyA: "#8beef9",
-    skyB: "#165c7f",
+    circuitA: "#8beef9",
+    circuitB: "#165c7f",
     fog: "rgba(170, 247, 255, 0.2)",
     platformTop: "#3a7ca0",
     platformSide: "#1f4f67",
@@ -5816,8 +5816,8 @@ function updateCamera(level) {
 function drawBackground(level) {
   const scene = level && level.scene ? level.scene : platformScenes[0];
   const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  grad.addColorStop(0, scene.skyA || "#2f5f9a");
-  grad.addColorStop(1, scene.skyB || "#1d3551");
+  grad.addColorStop(0, scene.circuitA || "#2f5f9a");
+  grad.addColorStop(1, scene.circuitB || "#1d3551");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -5830,12 +5830,22 @@ function drawBackground(level) {
     ctx.globalAlpha = 1;
   }
 
-  ctx.fillStyle = scene.fog || "rgba(220, 245, 255, 0.2)";
-  for (let i = 0; i < 5; i += 1) {
-    const x = ((i * 260 - cameraX * 0.35) % (canvas.width + 260)) - 130;
-    const y = 50 + (i % 3) * 70;
+  const netColor = scene.fog || "rgba(220, 245, 255, 0.2)";
+  ctx.strokeStyle = netColor;
+  ctx.fillStyle = netColor;
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 8; i += 1) {
+    const x = ((i * 180 - cameraX * 0.35) % (canvas.width + 240)) - 80;
+    const y = 36 + (i % 4) * 52;
     ctx.beginPath();
-    ctx.ellipse(x + 110, y, 100, 28, 0, 0, Math.PI * 2);
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 60, y);
+    ctx.lineTo(x + 60, y + 18);
+    ctx.lineTo(x + 118, y + 18);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x + 60, y, 3, 0, Math.PI * 2);
+    ctx.arc(x + 118, y + 18, 3, 0, Math.PI * 2);
     ctx.fill();
   }
 

@@ -204,7 +204,7 @@ const state = {
   flashProgress: 0,
   enemies: [],
   settings: {
-    bgTheme: "sky",
+    bgTheme: "circuit",
     enemyMode: "static",
     enemySpeed: 1,
     musicOn: true,
@@ -216,7 +216,7 @@ const state = {
     explorer: false,
     hero: false,
   },
-  seenThemes: new Set(["sky"]),
+  seenThemes: new Set(["circuit"]),
 };
 
 const assets = { images: {}, sounds: {} };
@@ -284,11 +284,20 @@ async function toggleBuilderFullscreen() {
 }
 
 function themeColors() {
-  if (state.settings.bgTheme === "forest") return { bg: "#d8ecd6", empty: "#e8f3e7" };
-  if (state.settings.bgTheme === "lava") return { bg: "#f7d8ce", empty: "#fde9df" };
-  if (state.settings.bgTheme === "space") return { bg: "#ccd5f0", empty: "#dde4fa" };
-  if (state.settings.bgTheme === "classic") return { bg: "#d6dfe9", empty: "#e4ebf4" };
-  return { bg: "#d2e6f7", empty: "#eaf3fb" };
+  const theme = normalizeBgTheme(state.settings.bgTheme);
+  if (theme === "matrix") return { bg: "#c8ebd8", empty: "#e0f6ea" };
+  if (theme === "thermal") return { bg: "#f3d0c7", empty: "#f9e5de" };
+  if (theme === "neon") return { bg: "#d2d8f5", empty: "#e4e9fb" };
+  if (theme === "classic") return { bg: "#d6dfe9", empty: "#e4ebf4" };
+  return { bg: "#cde8f3", empty: "#e6f5fb" };
+}
+
+function normalizeBgTheme(theme) {
+  if (theme === "sky") return "circuit";
+  if (theme === "forest") return "matrix";
+  if (theme === "lava") return "thermal";
+  if (theme === "space") return "neon";
+  return theme || "circuit";
 }
 
 function stopNarration() {
@@ -854,15 +863,17 @@ function drawTile(x, y, tile) {
 
 function drawStageBackground() {
   const palette = themeColors();
+  const theme = normalizeBgTheme(state.settings.bgTheme);
+  state.settings.bgTheme = theme;
   const grd = ctx.createLinearGradient(0, 0, 0, stage.height);
   grd.addColorStop(0, palette.bg);
   grd.addColorStop(1, "#eef4fb");
-  if (state.settings.bgTheme === "lava") {
-    grd.addColorStop(1, "#fde1d4");
+  if (theme === "thermal") {
+    grd.addColorStop(1, "#fddfd5");
   }
-  if (state.settings.bgTheme === "space") {
-    grd.addColorStop(0.7, "#dae1fb");
-    grd.addColorStop(1, "#eef0ff");
+  if (theme === "neon") {
+    grd.addColorStop(0.7, "#d5defc");
+    grd.addColorStop(1, "#eef2ff");
   }
   ctx.fillStyle = grd;
   ctx.fillRect(0, 0, stage.width, stage.height);
@@ -1397,6 +1408,7 @@ function setupCursorButtons() {
 }
 
 function applyLevelOptionsUI() {
+  state.settings.bgTheme = normalizeBgTheme(state.settings.bgTheme);
   if (bgThemeSelect) bgThemeSelect.value = state.settings.bgTheme;
   if (enemyModeSelect) enemyModeSelect.value = state.settings.enemyMode;
   if (enemySpeedSelect) enemySpeedSelect.value = String(state.settings.enemySpeed);
