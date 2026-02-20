@@ -1896,6 +1896,9 @@ const enemyProjectiles = [];
 let dashCooldown = 0;
 let dashTime = 0;
 const hitEffects = [];
+let whipCooldown = 0;
+let whipVisualTimer = 0;
+let whipTarget = null;
 let selectedOrder = [];
 let selectedKeySequence = [];
 let currentMode = "basic";
@@ -1963,6 +1966,10 @@ const ENEMY_SHOT_BASE_COOLDOWN = 1400;
 const DASH_SPEED = 9;
 const DASH_TIME = 140;
 const DASH_COOLDOWN = 700;
+const WHIP_RANGE = 220;
+const WHIP_COOLDOWN = 620;
+const WHIP_MISS_COOLDOWN = 260;
+const WHIP_VIS_TIME = 150;
 
 const weapons = {
   punch: {
@@ -3743,7 +3750,7 @@ function updateNotes() {
     const level = levels[currentLevelIndex];
     const topic = level && level.lessonTopic ? level.lessonTopic : null;
     const rewardText = topic && topic.reward ? topic.reward.label : "Bonus sorpresa";
-    noteGoal.textContent = `Objetivo: recolecta monedas, llega a la meta y responde el tema del nivel para desbloquear ${rewardText}.`;
+    noteGoal.textContent = `Objetivo: recolecta monedas, llega a la meta y responde el tema del nivel para desbloquear ${rewardText}. Usa Q para lanzar el latigo y alcanzar monedas lejanas.`;
     noteLearn.textContent = topic ? `Tema del nivel: ${topic.title}` : "Aprendizajes: electronica basica y pensamiento logico.";
   }
 }
@@ -4813,6 +4820,9 @@ function resetLevel() {
   hud.levelText.textContent = getPlatformLevelNumber(level, currentLevelIndex);
   hud.livesText.textContent = lives;
   heldItemTimer = 0;
+  whipCooldown = 0;
+  whipVisualTimer = 0;
+  whipTarget = null;
 }
 
 function showToast(message, duration = 1800) {
@@ -5602,6 +5612,54 @@ function attemptDash() {
   dashCooldown = DASH_COOLDOWN;
 }
 
+function findWhipCoinTarget(level) {
+  if (!level || !level.coins || !level.coins.length) return null;
+  const originX = player.x + player.w / 2;
+  const originY = player.y + player.h / 2;
+  let best = null;
+  for (let i = 0; i < level.coins.length; i += 1) {
+    const coin = level.coins[i];
+    const coinX = coin.x + 16;
+    const coinY = coin.y + 16;
+    const dx = coinX - originX;
+    const dy = coinY - originY;
+    const distance = Math.hypot(dx, dy);
+    if (distance > WHIP_RANGE) continue;
+    const facingPenalty = dx * player.facing < -18 ? 45 : 0;
+    const score = distance + facingPenalty;
+    if (!best || score < best.score) {
+      best = { index: i, x: coinX, y: coinY, score };
+    }
+  }
+  return best;
+}
+
+function attemptWhipCollect() {
+  if (activeGame !== "platform" || gameState !== "playing") return;
+  if (whipCooldown > 0) return;
+
+  const level = levels[currentLevelIndex];
+  const target = findWhipCoinTarget(level);
+  if (!target) {
+    whipCooldown = WHIP_MISS_COOLDOWN;
+    whipVisualTimer = WHIP_VIS_TIME;
+    whipTarget = {
+      x: player.x + player.w / 2 + player.facing * Math.min(WHIP_RANGE * 0.8, 160),
+      y: player.y + player.h / 2 - 6,
+    };
+    return;
+  }
+
+  whipCooldown = WHIP_COOLDOWN;
+  whipVisualTimer = WHIP_VIS_TIME;
+  whipTarget = { x: target.x, y: target.y };
+  level.coins.splice(target.index, 1);
+  collectedCoins += 1;
+  hud.coinText.textContent = collectedCoins;
+  playSound("coin");
+  heldItemTimer = HELD_ITEM_TIME;
+}
+
 function updateProjectiles(level) {
   for (let i = projectiles.length - 1; i >= 0; i -= 1) {
     const proj = projectiles[i];
@@ -5824,29 +5882,69 @@ function drawBackground(level) {
   const bg = assets.images.bg;
   if (bg) {
     const parallax = (cameraX * 0.18) % canvas.width;
-    ctx.globalAlpha = 0.22;
+    ctx.globalAlpha = 0.14;
     ctx.drawImage(bg, -parallax, 0, canvas.width, canvas.height);
     ctx.drawImage(bg, canvas.width - parallax, 0, canvas.width, canvas.height);
     ctx.globalAlpha = 1;
   }
 
   const netColor = scene.fog || "rgba(220, 245, 255, 0.2)";
-  ctx.strokeStyle = netColor;
+  const pulse = 0.3 + (Math.sin(lastTime * 0.0016) + 1) * 0.2;
+  const horizon = canvas.height * 0.56;
+
+  ctx.strokeStyle = `rgba(130, 238, 255, ${(0.08 + pulse * 0.08).toFixed(3)})`;
+  ctx.lineWidth = 1;
+  for (let y = horizon; y < canvas.height + 1; y += 22) {
+    const depth = (y - horizon) / Math.max(1, canvas.height - horizon);
+    const drift = (cameraX * (0.08 + depth * 0.2)) % 180;
+    ctx.beginPath();
+    ctx.moveTo(-180 + drift, y);
+    ctx.lineTo(canvas.width + 180 + drift, y);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = `rgba(110, 224, 255, ${(0.08 + pulse * 0.1).toFixed(3)})`;
+  for (let x = -240; x <= canvas.width + 240; x += 58) {
+    const shift = (cameraX * 0.12) % 58;
+    ctx.beginPath();
+    ctx.moveTo(x - shift, horizon);
+    ctx.lineTo(canvas.width / 2, canvas.height + 120);
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = `rgba(120, 235, 255, ${(0.05 + pulse * 0.06).toFixed(3)})`;
+  for (let i = 0; i < 26; i += 1) {
+    const x = ((i * 87 + cameraX * 0.23) % (canvas.width + 160)) - 80;
+    const y = ((i * 53 + lastTime * 0.04) % (horizon + 40)) - 20;
+    const w = 1 + (i % 3);
+    const h = 6 + (i % 5) * 2;
+    ctx.fillRect(x, y, w, h);
+  }
+
+  ctx.fillStyle = "rgba(10, 28, 44, 0.28)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.fillStyle = netColor;
+  ctx.strokeStyle = netColor;
   ctx.lineWidth = 2;
-  for (let i = 0; i < 8; i += 1) {
-    const x = ((i * 180 - cameraX * 0.35) % (canvas.width + 240)) - 80;
-    const y = 36 + (i % 4) * 52;
+  for (let i = 0; i < 10; i += 1) {
+    const x = ((i * 160 - cameraX * 0.35) % (canvas.width + 240)) - 100;
+    const y = 28 + (i % 5) * 44;
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.lineTo(x + 60, y);
-    ctx.lineTo(x + 60, y + 18);
-    ctx.lineTo(x + 118, y + 18);
+    ctx.lineTo(x + 62, y);
+    ctx.lineTo(x + 62, y + 16);
+    ctx.lineTo(x + 118, y + 16);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(x + 60, y, 3, 0, Math.PI * 2);
-    ctx.arc(x + 118, y + 18, 3, 0, Math.PI * 2);
+    ctx.arc(x + 62, y, 3, 0, Math.PI * 2);
+    ctx.arc(x + 118, y + 16, 3, 0, Math.PI * 2);
     ctx.fill();
+  }
+
+  ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
+  for (let y = 0; y < canvas.height; y += 4) {
+    ctx.fillRect(0, y, canvas.width, 1);
   }
 
   if (scene.deco === "city") {
@@ -6036,6 +6134,38 @@ function drawDashTrail() {
     ctx.arc(point.x - cameraX, point.y, 12 * alpha + 2, 0, Math.PI * 2);
     ctx.fill();
   }
+  ctx.restore();
+}
+
+function drawWhipEffect() {
+  if (whipVisualTimer <= 0 || !whipTarget || gameState !== "playing") return;
+  const phase = 1 - whipVisualTimer / WHIP_VIS_TIME;
+  const handOffsetX = player.facing === 1 ? player.w - 8 : 8;
+  const handOffsetY = Math.max(18, player.h / 2 - 6) + 8;
+  const startX = player.x - cameraX + handOffsetX;
+  const startY = player.y + handOffsetY;
+  const endX = whipTarget.x - cameraX;
+  const endY = whipTarget.y;
+  const bend = Math.sin(phase * Math.PI) * 26;
+  const ctrlX = (startX + endX) / 2 + player.facing * (20 + bend * 0.5);
+  const ctrlY = Math.min(startY, endY) - 18 - bend;
+  ctx.save();
+  ctx.strokeStyle = "rgba(102, 240, 255, 0.9)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.quadraticCurveTo(ctrlX, ctrlY, endX, endY);
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(220, 255, 255, 0.75)";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(startX + player.facing * 2, startY - 1);
+  ctx.quadraticCurveTo(ctrlX, ctrlY - 4, endX, endY);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(255, 245, 200, 0.92)";
+  ctx.beginPath();
+  ctx.arc(endX, endY, 3.5, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 
@@ -6393,11 +6523,16 @@ function update(delta) {
   attackTimer = Math.max(0, attackTimer - delta);
   dashCooldown = Math.max(0, dashCooldown - delta);
   dashTime = Math.max(0, dashTime - delta);
+  whipCooldown = Math.max(0, whipCooldown - delta);
+  whipVisualTimer = Math.max(0, whipVisualTimer - delta);
+  if (whipVisualTimer <= 0) whipTarget = null;
   heldItemTimer = Math.max(0, heldItemTimer - delta);
   speedBoostTimer = Math.max(0, speedBoostTimer - delta);
   if (gameState !== "playing") {
     heldItemTimer = 0;
     attackTimer = 0;
+    whipVisualTimer = 0;
+    whipTarget = null;
     return;
   }
   updatePlayer(level);
@@ -6437,6 +6572,7 @@ function render() {
   drawEnemyProjectiles();
   drawHitEffects();
   drawDashTrail();
+  drawWhipEffect();
   drawPlayer();
 }
 
@@ -6533,6 +6669,9 @@ function handleKey(e, isDown) {
   }
   if ((e.code === "ShiftLeft" || e.code === "ShiftRight") && isDown) {
     attemptDash();
+  }
+  if (e.code === "KeyQ" && isDown) {
+    attemptWhipCollect();
   }
 }
 
