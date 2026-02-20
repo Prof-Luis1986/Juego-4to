@@ -88,8 +88,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: el personaje quiere avanzar. Elige la accion correcta.",
-        code: "¿Que accion hace avanzar?",
+        prompt: "Contexto: el personaje quiere avanzar. Elige la acción correcta.",
+        code: "¿Qué acción hace avanzar?",
         options: [
           "Mover derecha",
           "Saltar",
@@ -100,10 +100,10 @@ const defaultLevels = [
       },
       intermediate: {
         type: "text",
-        prompt: "Completa la accion para mover al personaje:",
+        prompt: "Completa la acción para mover al personaje:",
         code: "Mover derecha",
         expected: "Mover derecha",
-        hint: "Recuerda: una instruccion termina con ;",
+        hint: "Recuerda: una instrucción termina con ;",
       },
     },
   },
@@ -135,8 +135,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: el personaje tiene una llave. ¿Que debe hacer?",
-        code: "¿Que debe hacer?",
+        prompt: "Contexto: el personaje tiene una llave. ¿Qué debe hacer?",
+        code: "¿Qué debe hacer?",
         options: [
           "Abrir puerta",
           "Saltar",
@@ -147,10 +147,10 @@ const defaultLevels = [
       },
       intermediate: {
         type: "text",
-        prompt: "Contexto: el personaje tiene una llave. Completa la accion correcta.",
+        prompt: "Contexto: el personaje tiene una llave. Completa la acción correcta.",
         code: "____",
         expected: "Abrir puerta",
-        hint: "La accion es abrir la puerta.",
+        hint: "La acción es abrir la puerta.",
       },
     },
     reward: { weapon: "sword" },
@@ -187,21 +187,21 @@ const defaultLevels = [
       basic: {
         type: "multiple",
         prompt: "Contexto: el personaje quiere subir una escalera saltando 3 veces.",
-        code: "¿Que accion se repite?",
+        code: "¿Qué acción se repite?",
         options: [
           "Saltar",
           "Mover derecha",
           "Abrir puerta",
         ],
         expectedIndex: 0,
-        hint: "Dentro del ciclo va la accion que se repite.",
+        hint: "Dentro del ciclo va la acción que se repite.",
       },
       intermediate: {
         type: "text",
         prompt: "Contexto: el personaje quiere subir una escalera saltando 3 veces.",
         code: "____",
         expected: "Saltar",
-        hint: "La accion que se repite es saltar.",
+        hint: "La acción que se repite es saltar.",
       },
     },
   },
@@ -233,27 +233,27 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: necesitas saltar muchas veces. Elige la accion correcta.",
-        code: "¿Cual opcion es correcta?",
+        prompt: "Contexto: necesitas saltar muchas veces. Elige la acción correcta.",
+        code: "¿Cuál opción es correcta?",
         options: [
           "Repetir 5 saltos",
           "si (5) { Saltar }",
           "Saltar 5 veces",
         ],
         expectedIndex: 0,
-        hint: "El ciclo debe incluir la accion dentro de llaves.",
+        hint: "El ciclo debe incluir la acción dentro de llaves.",
       },
       intermediate: {
         type: "multiple",
-        prompt: "Contexto: necesitas saltar muchas veces. Elige la accion correcta.",
-        code: "¿Cual opcion es correcta?",
+        prompt: "Contexto: necesitas saltar muchas veces. Elige la acción correcta.",
+        code: "¿Cuál opción es correcta?",
         options: [
           "Repetir 5 saltos",
           "si (5) { Saltar }",
           "Saltar 5 veces",
         ],
         expectedIndex: 0,
-        hint: "El ciclo debe incluir la accion dentro de llaves.",
+        hint: "El ciclo debe incluir la acción dentro de llaves.",
       },
     },
     reward: { weapon: "pistol" },
@@ -300,7 +300,7 @@ const defaultLevels = [
         prompt: "Completa la secuencia para recoger una moneda:",
         code: "Ver moneda\n____\nAvanzar",
         expected: "Recoger moneda",
-        hint: "La accion del medio es recoger la moneda.",
+        hint: "La acción del medio es recoger la moneda.",
       },
     },
   },
@@ -334,8 +334,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: queremos mover 3 pasos a la derecha. Elige la opcion correcta.",
-        code: "¿Que opcion es correcta?",
+        prompt: "Contexto: queremos mover 3 pasos a la derecha. Elige la opción correcta.",
+        code: "¿Qué opción es correcta?",
         options: [
           "repetir 3 pasos",
           "repetir 5 pasos",
@@ -346,10 +346,10 @@ const defaultLevels = [
       },
       intermediate: {
         type: "text",
-        prompt: "Completa la accion para mover 3 pasos:",
+        prompt: "Completa la acción para mover 3 pasos:",
         code: "____",
         expected: "Mover derecha",
-        hint: "La accion es mover a la derecha.",
+        hint: "La acción es mover a la derecha.",
       },
     },
   },
@@ -384,8 +384,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: el personaje llega a un puente. ¿Que debe hacer primero?",
-        code: "¿Que va primero?",
+        prompt: "Contexto: el personaje llega a un puente. ¿Qué debe hacer primero?",
+        code: "¿Qué va primero?",
         options: [
           "Mirar si es seguro",
           "Correr",
@@ -429,7 +429,7 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "keysequence",
-        prompt: "Juego de reflejos lógicos: si el semaforo cambia de rojo a verde, ejecuta la secuencia correcta.",
+        prompt: "Juego de reflejos lógicos: si el semáforo cambia de rojo a verde, ejecuta la secuencia correcta.",
         code: "Esperar\nMover derecha\nMover derecha",
         expectedKeys: ["JUMP", "RIGHT", "RIGHT"],
         hint: "Usa Espacio para iniciar y luego dos veces derecha (flecha derecha o D).",
@@ -471,8 +471,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: necesitas saltar 4 veces. Elige la accion correcta.",
-        code: "¿Cual opcion es correcta?",
+        prompt: "Contexto: necesitas saltar 4 veces. Elige la acción correcta.",
+        code: "¿Cuál opción es correcta?",
         options: [
           "Repetir 4 saltos",
           "Repetir 2 saltos",
@@ -486,7 +486,7 @@ const defaultLevels = [
         prompt: "Completa el ciclo para saltar 4 veces:",
         code: "____",
         expected: "Saltar",
-        hint: "La accion es saltar.",
+        hint: "La acción es saltar.",
       },
     },
   },
@@ -519,8 +519,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: tienes llave. ¿Que haces?",
-        code: "¿Que haces?",
+        prompt: "Contexto: tienes llave. ¿Qué haces?",
+        code: "¿Qué haces?",
         options: [
           "Abrir puerta",
           "Dormir",
@@ -531,7 +531,7 @@ const defaultLevels = [
       },
       intermediate: {
         type: "text",
-        prompt: "Completa la accion correcta:",
+        prompt: "Completa la acción correcta:",
         code: "____",
         expected: "Abrir puerta",
         hint: "Abrimos la puerta.",
@@ -608,8 +608,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: necesitas avanzar 2 veces. Elige la accion correcta.",
-        code: "¿Cual opcion es correcta?",
+        prompt: "Contexto: necesitas avanzar 2 veces. Elige la acción correcta.",
+        code: "¿Cuál opción es correcta?",
         options: [
           "Repetir 2 avances",
           "Repetir 3 avances",
@@ -623,7 +623,7 @@ const defaultLevels = [
         prompt: "Completa el ciclo para avanzar 2 veces:",
         code: "____",
         expected: "Avanzar",
-        hint: "La accion es avanzar.",
+        hint: "La acción es avanzar.",
       },
     },
   },
@@ -653,8 +653,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: ves una moneda. ¿Que haces?",
-        code: "¿Que haces?",
+        prompt: "Contexto: ves una moneda. ¿Qué haces?",
+        code: "¿Qué haces?",
         options: [
           "Recoger moneda",
           "Dormir",
@@ -665,7 +665,7 @@ const defaultLevels = [
       },
       intermediate: {
         type: "text",
-        prompt: "Completa la accion correcta:",
+        prompt: "Completa la acción correcta:",
         code: "____",
         expected: "Recoger moneda",
         hint: "Recogemos la moneda.",
@@ -703,8 +703,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: necesitas avanzar 5 veces. Elige la accion correcta.",
-        code: "¿Cual opcion es correcta?",
+        prompt: "Contexto: necesitas avanzar 5 veces. Elige la acción correcta.",
+        code: "¿Cuál opción es correcta?",
         options: [
           "Repetir 5 avances",
           "Repetir 4 avances",
@@ -718,7 +718,7 @@ const defaultLevels = [
         prompt: "Completa el ciclo para avanzar 5 veces:",
         code: "____",
         expected: "Avanzar",
-        hint: "La accion es avanzar.",
+        hint: "La acción es avanzar.",
       },
     },
   },
@@ -751,8 +751,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: quieres saltar 2 veces. Elige la opcion correcta.",
-        code: "¿Cual opcion es correcta?",
+        prompt: "Contexto: quieres saltar 2 veces. Elige la opción correcta.",
+        code: "¿Cuál opción es correcta?",
         options: [
           "saltar dos veces",
           "saltar cinco veces",
@@ -763,10 +763,10 @@ const defaultLevels = [
       },
       intermediate: {
         type: "text",
-        prompt: "Completa la accion para saltar:",
+        prompt: "Completa la acción para saltar:",
         code: "____",
         expected: "Saltar",
-        hint: "La accion es saltar.",
+        hint: "La acción es saltar.",
       },
     },
   },
@@ -876,22 +876,22 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: un enemigo esta cerca. ¿Que accion es correcta?",
-        code: "¿Que haces?",
+        prompt: "Contexto: un enemigo está cerca. ¿Qué acción es correcta?",
+        code: "¿Qué haces?",
         options: [
           "Atacar",
           "Dormir",
           "Pintar",
         ],
         expectedIndex: 0,
-        hint: "Si el enemigo esta cerca, atacamos.",
+        hint: "Si el enemigo está cerca, atacamos.",
       },
       intermediate: {
         type: "text",
-        prompt: "Completa la accion cuando el enemigo esta cerca:",
+        prompt: "Completa la acción cuando el enemigo está cerca:",
         code: "____",
         expected: "Atacar",
-        hint: "La accion es atacar.",
+        hint: "La acción es atacar.",
       },
     },
   },
@@ -972,7 +972,7 @@ const defaultLevels = [
       basic: {
         type: "multiple",
         prompt: "Contexto: necesitas esquivar y luego atacar. Elige el orden.",
-        code: "¿Que va primero?",
+        code: "¿Qué va primero?",
         options: [
           "Esquivar luego Atacar",
           "Atacar luego Esquivar",
@@ -1084,8 +1084,8 @@ const defaultLevels = [
     challenge: {
       basic: {
         type: "multiple",
-        prompt: "Contexto: necesitas atacar 3 veces. Elige la accion correcta.",
-        code: "¿Cual opcion es correcta?",
+        prompt: "Contexto: necesitas atacar 3 veces. Elige la acción correcta.",
+        code: "¿Cuál opción es correcta?",
         options: [
           "repetir 3 ataques",
           "repetir 1 ataque",
@@ -1099,7 +1099,7 @@ const defaultLevels = [
         prompt: "Completa el ciclo para atacar 3 veces:",
         code: "____",
         expected: "Atacar",
-        hint: "La accion repetida es atacar.",
+        hint: "La acción repetida es atacar.",
       },
     },
   },
@@ -1224,22 +1224,22 @@ function buildGeneratedLevels(startIndex, count) {
     const challenge = {
       basic: {
         type: "multiple",
-        prompt: "Contexto: el enemigo se acerca. ¿Que haces?",
-        code: "¿Que haces?",
+        prompt: "Contexto: el enemigo se acerca. ¿Qué haces?",
+        code: "¿Qué haces?",
         options: [
           "Atacar",
           "Dormir",
           "Esconderse",
         ],
         expectedIndex: 0,
-        hint: "Si el enemigo esta cerca, atacamos.",
+        hint: "Si el enemigo está cerca, atacamos.",
       },
       intermediate: {
         type: "text",
-        prompt: "Completa la accion correcta:",
+        prompt: "Completa la acción correcta:",
         code: "____",
         expected: "Atacar",
-        hint: "La accion es atacar.",
+        hint: "La acción es atacar.",
       },
     };
 
@@ -1294,14 +1294,14 @@ function createAdventureFallbackLevels() {
         basic: {
           type: "multiple",
           prompt: "Aventura: cruza el bosque y alcanza la puerta final.",
-          code: "¿Que accion te ayuda a avanzar con seguridad?",
+          code: "¿Qué acción te ayuda a avanzar con seguridad?",
           options: ["Mirar el camino", "Saltar sin mirar", "Quedarte quieto"],
           expectedIndex: 0,
           hint: "Observar primero evita errores.",
         },
         intermediate: {
           type: "text",
-          prompt: "Completa la accion principal de esta aventura:",
+          prompt: "Completa la acción principal de esta aventura:",
           code: "____",
           expected: "Avanzar",
           hint: "La meta requiere avanzar paso a paso.",
@@ -1441,7 +1441,7 @@ const platformScenes = [
 ];
 
 const educationalJourney = {
-  title: "Mision Electronica 4to",
+  title: "Misión Electrónica 4to",
   durationMinutes: 60,
   levels: [
     {
@@ -1450,38 +1450,38 @@ const educationalJourney = {
       questions: [
         {
           type: "multiple",
-          prompt: "¿Que es un LED?",
-          options: ["Un diodo emisor de luz", "Una bateria", "Un motor"],
+          prompt: "¿Qué es un LED?",
+          options: ["Un diodo emisor de luz", "Una batería", "Un motor"],
           expectedIndex: 0,
           hint: "Es un componente que convierte electricidad en luz.",
         },
         {
           type: "multiple",
-          prompt: "Si conectas un LED al reves, ¿que ocurre?",
-          options: ["Se enciende mas", "No enciende", "Explota siempre"],
+          prompt: "Si conectas un LED al revés, ¿qué ocurre?",
+          options: ["Se enciende más", "No enciende", "Explota siempre"],
           expectedIndex: 1,
           hint: "El LED tiene polaridad.",
         },
         {
           type: "multiple",
-          prompt: "¿Para que sirve la pata larga del LED?",
+          prompt: "¿Para qué sirve la pata larga del LED?",
           options: ["Es el polo positivo", "Es el polo negativo", "No importa"],
           expectedIndex: 0,
-          hint: "La pata larga es el anodo.",
+          hint: "La pata larga es el ánodo.",
         },
         {
           type: "multiple",
           prompt: "Conectar un LED sin resistencia puede:",
           options: ["Protegerlo", "Quemarlo", "No cambiar nada"],
           expectedIndex: 1,
-          hint: "Sin limite de corriente puede danarse.",
+          hint: "Sin límite de corriente puede dañarse.",
         },
         {
           type: "text",
-          prompt: "Explica en una frase por que usamos resistencia con un LED.",
+          prompt: "Explica en una frase por qué usamos resistencia con un LED.",
           expectedKeywords: ["limita", "corriente", "protege", "led"],
           minKeywordMatches: 2,
-          hint: "Relaciona resistencia, corriente y proteccion.",
+          hint: "Relaciona resistencia, corriente y protección.",
         },
       ],
       reward: { type: "coins", value: 2, label: "Monedas de circuito" },
@@ -1492,8 +1492,8 @@ const educationalJourney = {
       questions: [
         {
           type: "multiple",
-          prompt: "¿Que hace una resistencia en un circuito?",
-          options: ["Produce luz", "Limita corriente", "Guarda energia"],
+          prompt: "¿Qué hace una resistencia en un circuito?",
+          options: ["Produce luz", "Limita corriente", "Guarda energía"],
           expectedIndex: 1,
           hint: "Su trabajo principal es controlar el paso de corriente.",
         },
@@ -1502,25 +1502,25 @@ const educationalJourney = {
           prompt: "La unidad de la resistencia es:",
           options: ["Voltios", "Amperes", "Ohms"],
           expectedIndex: 2,
-          hint: "Se representa con el simbolo omega.",
+          hint: "Se representa con el símbolo omega.",
         },
         {
           type: "multiple",
           prompt: "Si aumenta el valor de la resistencia, la corriente:",
           options: ["Aumenta", "Disminuye", "No cambia"],
           expectedIndex: 1,
-          hint: "Mas oposicion significa menos corriente.",
+          hint: "Más oposición significa menos corriente.",
         },
         {
           type: "multiple",
           prompt: "¿Las resistencias tienen polaridad?",
-          options: ["Si", "No", "Solo algunas con colores"],
+          options: ["Sí", "No", "Solo algunas con colores"],
           expectedIndex: 1,
           hint: "Se pueden conectar en cualquier sentido.",
         },
         {
           type: "text",
-          prompt: "Escribe que significa el simbolo Ω.",
+          prompt: "Escribe qué significa el símbolo Ω.",
           expectedKeywords: ["ohm", "ohms", "resistencia"],
           minKeywordMatches: 1,
           hint: "Omega representa la unidad de resistencia.",
@@ -1529,7 +1529,7 @@ const educationalJourney = {
       reward: { type: "shield", value: 1, label: "Escudo aislante" },
     },
     {
-      title: "Ley de Ohm basica",
+      title: "Ley de Ohm básica",
       text: "La Ley de Ohm relaciona voltaje, corriente y resistencia: V = I x R. Si conoces dos valores, puedes calcular el tercero.",
       questions: [
         {
@@ -1541,7 +1541,7 @@ const educationalJourney = {
         },
         {
           type: "multiple",
-          prompt: "Con V = 6V y R = 2Ω, ¿cuanto vale I?",
+          prompt: "Con V = 6V y R = 2Ω, ¿cuánto vale I?",
           options: ["2 A", "3 A", "4 A"],
           expectedIndex: 1,
           hint: "Divide 6 entre 2.",
@@ -1555,20 +1555,20 @@ const educationalJourney = {
         },
         {
           type: "multiple",
-          prompt: "¿Que ley relaciona voltaje, corriente y resistencia?",
+          prompt: "¿Qué ley relaciona voltaje, corriente y resistencia?",
           options: ["Ley de Newton", "Ley de Ohm", "Ley de Faraday"],
           expectedIndex: 1,
-          hint: "Es la formula V = I x R.",
+          hint: "Es la fórmula V = I x R.",
         },
         {
           type: "text",
-          prompt: "Escribe la formula de corriente usando V y R.",
+          prompt: "Escribe la fórmula de corriente usando V y R.",
           expectedKeywords: ["i", "v", "r", "v/r", "divide"],
           minKeywordMatches: 2,
           hint: "Debes despejar I de V = I x R.",
         },
       ],
-      reward: { type: "speed", value: 10000, label: "Turbo de calculo" },
+      reward: { type: "speed", value: 10000, label: "Turbo de cálculo" },
     },
     {
       title: "Conexiones en serie",
@@ -1576,17 +1576,17 @@ const educationalJourney = {
       questions: [
         {
           type: "multiple",
-          prompt: "En una conexion en serie los componentes van:",
+          prompt: "En una conexión en serie los componentes van:",
           options: ["Uno tras otro", "En caminos separados", "Sin cables"],
           expectedIndex: 0,
           hint: "Solo existe un camino para la corriente.",
         },
         {
           type: "multiple",
-          prompt: "Si un foco se apaga en serie, los demas:",
-          options: ["Siguen igual", "Tambien se apagan", "Brillan mas"],
+          prompt: "Si un foco se apaga en serie, los demás:",
+          options: ["Siguen igual", "También se apagan", "Brillan más"],
           expectedIndex: 1,
-          hint: "El camino unico se corta.",
+          hint: "El camino único se corta.",
         },
         {
           type: "multiple",
@@ -1604,10 +1604,10 @@ const educationalJourney = {
         },
         {
           type: "text",
-          prompt: "Explica por que se suman resistencias en serie.",
-          expectedKeywords: ["suman", "camino", "oposicion", "corriente"],
+          prompt: "Explica por qué se suman resistencias en serie.",
+          expectedKeywords: ["suman", "camino", "oposición", "corriente"],
           minKeywordMatches: 2,
-          hint: "Piensa en la oposicion total en un camino unico.",
+          hint: "Piensa en la oposición total en un camino único.",
         },
       ],
       reward: { type: "shortcut", value: 260, label: "Atajo en serie" },
@@ -1618,15 +1618,15 @@ const educationalJourney = {
       questions: [
         {
           type: "multiple",
-          prompt: "En paralelo los componentes estan:",
-          options: ["En un solo camino", "En varios caminos", "Sin conexion"],
+          prompt: "En paralelo los componentes están:",
+          options: ["En un solo camino", "En varios caminos", "Sin conexión"],
           expectedIndex: 1,
           hint: "Cada rama es un camino distinto.",
         },
         {
           type: "multiple",
           prompt: "Si un foco se apaga en paralelo, los otros:",
-          options: ["Tambien se apagan", "Siguen encendidos", "Se desconectan por seguridad"],
+          options: ["También se apagan", "Siguen encendidos", "Se desconectan por seguridad"],
           expectedIndex: 1,
           hint: "Las ramas restantes siguen activas.",
         },
@@ -1639,35 +1639,35 @@ const educationalJourney = {
         },
         {
           type: "multiple",
-          prompt: "¿Que conexion se usa normalmente en las casas?",
+          prompt: "¿Qué conexión se usa normalmente en las casas?",
           options: ["Serie", "Paralelo", "Circular"],
           expectedIndex: 1,
           hint: "Permite que aparatos funcionen por separado.",
         },
         {
           type: "text",
-          prompt: "Escribe por que paralelo es mas util en casa.",
+          prompt: "Escribe por qué paralelo es más útil en casa.",
           expectedKeywords: ["independiente", "aparatos", "siguen", "funcionando", "rama"],
           minKeywordMatches: 2,
-          hint: "Si uno se apaga, los demas siguen.",
+          hint: "Si uno se apaga, los demás siguen.",
         },
       ],
       reward: { type: "life", value: 1, label: "Vida en paralelo" },
     },
     {
       title: "Pulsador",
-      text: "Un pulsador es un boton que abre o cierra el circuito. Al presionarlo, permite el paso de corriente temporalmente.",
+      text: "Un pulsador es un botón que abre o cierra el circuito. Al presionarlo, permite el paso de corriente temporalmente.",
       questions: [
         {
           type: "multiple",
-          prompt: "¿Que es un pulsador?",
-          options: ["Un boton que abre o cierra circuito", "Una bateria recargable", "Un cable largo"],
+          prompt: "¿Qué es un pulsador?",
+          options: ["Un botón que abre o cierra circuito", "Una batería recargable", "Un cable largo"],
           expectedIndex: 0,
           hint: "Funciona como control manual del paso de corriente.",
         },
         {
           type: "multiple",
-          prompt: "Cuando presionas un pulsador comun, el circuito:",
+          prompt: "Cuando presionas un pulsador común, el circuito:",
           options: ["Se cierra", "Se borra", "Se rompe"],
           expectedIndex: 0,
           hint: "Presionar permite el flujo.",
@@ -1689,12 +1689,12 @@ const educationalJourney = {
         {
           type: "text",
           prompt: "Da un ejemplo de uso diario de un pulsador.",
-          expectedKeywords: ["timbre", "boton", "juguete", "elevador", "control"],
+          expectedKeywords: ["timbre", "botón", "juguete", "elevador", "control"],
           minKeywordMatches: 1,
           hint: "Piensa en botones que se presionan y sueltan.",
         },
       ],
-      reward: { type: "coins", value: 3, label: "Bonus boton" },
+      reward: { type: "coins", value: 3, label: "Bonus botón" },
     },
     {
       title: "Brillo con transistor",
@@ -1702,22 +1702,22 @@ const educationalJourney = {
       questions: [
         {
           type: "multiple",
-          prompt: "¿Para que sirve un transistor en basico?",
+          prompt: "¿Para qué sirve un transistor en básico?",
           options: ["Controlar o amplificar corriente", "Guardar audio", "Medir temperatura del aula"],
           expectedIndex: 0,
-          hint: "Su funcion principal es controlar senales o corriente.",
+          hint: "Su función principal es controlar señales o corriente.",
         },
         {
           type: "multiple",
           prompt: "¿Un transistor puede controlar brillo de LED?",
-          options: ["Si", "No", "Solo con pilas gigantes"],
+          options: ["Sí", "No", "Solo con pilas gigantes"],
           expectedIndex: 0,
-          hint: "Es una aplicacion comun en electronica escolar.",
+          hint: "Es una aplicación común en electrónica escolar.",
         },
         {
           type: "multiple",
           prompt: "En muchos ejemplos, un transistor se comporta como:",
-          options: ["Un interruptor", "Una lampara", "Una bateria"],
+          options: ["Un interruptor", "Una lámpara", "Una batería"],
           expectedIndex: 0,
           hint: "Puede abrir o cerrar el paso de corriente.",
         },
@@ -1726,7 +1726,7 @@ const educationalJourney = {
           prompt: "Para aumentar brillo del LED con transistor se requiere:",
           options: ["Controlar la corriente", "Quitar todos los cables", "Invertir la gravedad"],
           expectedIndex: 0,
-          hint: "El brillo depende de cuanta corriente recibe.",
+          hint: "El brillo depende de cuánta corriente recibe.",
         },
         {
           type: "text",
@@ -1739,13 +1739,13 @@ const educationalJourney = {
       reward: { type: "shield", value: 1, label: "Escudo transistor" },
     },
     {
-      title: "Motores basicos",
-      text: "Un motor electrico transforma energia electrica en movimiento. Si inviertes la polaridad, puede girar en sentido contrario.",
+      title: "Motores básicos",
+      text: "Un motor eléctrico transforma energía eléctrica en movimiento. Si inviertes la polaridad, puede girar en sentido contrario.",
       questions: [
         {
           type: "multiple",
-          prompt: "¿Que hace un motor electrico?",
-          options: ["Convierte energia electrica en movimiento", "Convierte luz en sonido", "Solo almacena energia"],
+          prompt: "¿Qué hace un motor eléctrico?",
+          options: ["Convierte energía eléctrica en movimiento", "Convierte luz en sonido", "Solo almacena energía"],
           expectedIndex: 0,
           hint: "El resultado visible es movimiento.",
         },
@@ -1758,85 +1758,85 @@ const educationalJourney = {
         },
         {
           type: "multiple",
-          prompt: "Si conectas bateria a un motor DC, normalmente:",
+          prompt: "Si conectas batería a un motor DC, normalmente:",
           options: ["Gira", "Desaparece", "Se vuelve LED"],
           expectedIndex: 0,
-          hint: "Con energia adecuada comienza a rotar.",
+          hint: "Con energía adecuada comienza a rotar.",
         },
         {
           type: "multiple",
           prompt: "Si inviertes los cables de un motor DC:",
-          options: ["Gira al reves", "Se apaga para siempre", "No pasa nada"],
+          options: ["Gira al revés", "Se apaga para siempre", "No pasa nada"],
           expectedIndex: 0,
           hint: "Cambiar polaridad cambia el sentido de giro.",
         },
         {
           type: "text",
-          prompt: "Escribe una maquina escolar que use motor.",
+          prompt: "Escribe una máquina escolar que use motor.",
           expectedKeywords: ["ventilador", "carrito", "robot", "licuadora", "taladro"],
           minKeywordMatches: 1,
           hint: "Piensa en objetos que giran o se mueven.",
         },
       ],
-      reward: { type: "speed", value: 12000, label: "Turbo mecanico" },
+      reward: { type: "speed", value: 12000, label: "Turbo mecánico" },
     },
     {
-      title: "Robotica y Asimov",
-      text: "La robotica combina mecanica, electronica y programacion. Isaac Asimov propuso leyes famosas para guiar el comportamiento seguro de robots.",
+      title: "Robótica y Asimov",
+      text: "La robótica combina mecánica, electrónica y programación. Isaac Asimov propuso leyes famosas para guiar el comportamiento seguro de robots.",
       questions: [
         {
           type: "multiple",
-          prompt: "¿Que es un robot?",
-          options: ["Una maquina que realiza tareas", "Solo un juguete de plastico", "Un tipo de bateria"],
+          prompt: "¿Qué es un robot?",
+          options: ["Una máquina que realiza tareas", "Solo un juguete de plástico", "Un tipo de batería"],
           expectedIndex: 0,
-          hint: "Puede ejecutar acciones de forma automatica.",
+          hint: "Puede ejecutar acciones de forma automática.",
         },
         {
           type: "multiple",
-          prompt: "¿Quien escribio leyes de la robotica?",
+          prompt: "¿Quién escribió leyes de la robótica?",
           options: ["Isaac Asimov", "Albert Einstein", "Marie Curie"],
           expectedIndex: 0,
-          hint: "Fue un escritor de ciencia ficcion.",
+          hint: "Fue un escritor de ciencia ficción.",
         },
         {
           type: "multiple",
-          prompt: "Primera ley de robotica de Asimov:",
-          options: ["No danar a un humano", "Correr mas rapido", "Construir mas robots"],
+          prompt: "Primera ley de robótica de Asimov:",
+          options: ["No dañar a un humano", "Correr más rápido", "Construir más robots"],
           expectedIndex: 0,
           hint: "La seguridad humana es prioridad.",
         },
         {
           type: "multiple",
           prompt: "¿Los robots piensan igual que humanos?",
-          options: ["Si, exactamente igual", "No exactamente", "Solo cuando llueve"],
+          options: ["Sí, exactamente igual", "No exactamente", "Solo cuando llueve"],
           expectedIndex: 1,
           hint: "Procesan datos, pero no son humanos.",
         },
         {
           type: "text",
-          prompt: "Explica por que la seguridad es importante en robotica.",
-          expectedKeywords: ["personas", "seguridad", "evitar", "danos", "control"],
+          prompt: "Explica por qué la seguridad es importante en robótica.",
+          expectedKeywords: ["personas", "seguridad", "evitar", "daños", "control"],
           minKeywordMatches: 2,
           hint: "Relaciona robots con cuidado de personas.",
         },
       ],
-      reward: { type: "shortcut", value: 340, label: "Atajo robotico" },
+      reward: { type: "shortcut", value: 340, label: "Atajo robótico" },
     },
     {
       title: "Reto integrador de circuitos",
-      text: "Un circuito simple puede tener bateria, resistencia, pulsador y LED. Comprender el papel de cada parte ayuda a disenar proyectos seguros.",
+      text: "Un circuito simple puede tener batería, resistencia, pulsador y LED. Comprender el papel de cada parte ayuda a diseñar proyectos seguros.",
       questions: [
         {
           type: "multiple",
-          prompt: "En un circuito basico: bateria, resistencia, pulsador y LED. ¿Que da energia?",
-          options: ["Bateria", "Pulsador", "LED"],
+          prompt: "En un circuito básico: batería, resistencia, pulsador y LED. ¿Qué da energía?",
+          options: ["Batería", "Pulsador", "LED"],
           expectedIndex: 0,
           hint: "Es la fuente de voltaje.",
         },
         {
           type: "multiple",
-          prompt: "En ese mismo circuito, ¿que componente protege al LED?",
-          options: ["Resistencia", "Bateria", "Cable largo"],
+          prompt: "En ese mismo circuito, ¿qué componente protege al LED?",
+          options: ["Resistencia", "Batería", "Cable largo"],
           expectedIndex: 0,
           hint: "Limita la corriente.",
         },
@@ -1845,21 +1845,21 @@ const educationalJourney = {
           prompt: "Con dos LEDs en serie, si uno se quema:",
           options: ["El otro sigue", "Ambos se apagan", "Brillan doble"],
           expectedIndex: 1,
-          hint: "En serie se corta el unico camino.",
+          hint: "En serie se corta el único camino.",
         },
         {
           type: "multiple",
           prompt: "Con dos LEDs en paralelo, si uno se quema:",
-          options: ["El otro sigue encendido", "Se apagan ambos", "Se invierte bateria"],
+          options: ["El otro sigue encendido", "Se apagan ambos", "Se invierte batería"],
           expectedIndex: 0,
           hint: "Las ramas son independientes.",
         },
         {
           type: "text",
-          prompt: "Explica que conexion es mas segura para casa y por que.",
+          prompt: "Explica qué conexión es más segura para casa y por qué.",
           expectedKeywords: ["paralelo", "independiente", "aparatos", "siguen", "funcionando"],
           minKeywordMatches: 2,
-          hint: "Si falla uno, los demas deben seguir.",
+          hint: "Si falla uno, los demás deben seguir.",
         },
       ],
       reward: { type: "life", value: 1, label: "Vida de ingeniero" },
@@ -1910,7 +1910,7 @@ let platformSessionSeed = 0;
 const dashTrail = [];
 let heldItemTimer = 0;
 let speedBoostTimer = 0;
-let shieldCharges = 0;
+let shieldTimer = 0;
 let pendingShortcut = 0;
 let pendingCoinBonus = 0;
 let currentChallengeSnapshot = null;
@@ -1962,6 +1962,7 @@ const HELD_ITEM_TIME = 220;
 const HELD_ITEM_SIZE = 28;
 const ATTACK_VIS_TIME = 160;
 const ENEMY_SHOT_BASE_COOLDOWN = 1400;
+const SHIELD_BASE_TIME = 5000;
 
 const DASH_SPEED = 9;
 const DASH_TIME = 140;
@@ -3667,7 +3668,7 @@ function getStrategyBiomeInstruction(level) {
   if (level.biomeName === "Castillo") {
     return `Castillo: puertas moviles cambian cada ${level.castleDoorCycle} turnos. Orbe oculto + X: aparta guardia y abre paso temporal.`;
   }
-  return "Bioma tactico: recoge gemas, toma llave, busca orbe oculto y usa X como power-up.";
+  return "Bioma táctico: recoge gemas, toma llave, busca orbe oculto y usa X como power-up.";
 }
 
 function speakBiomeInstruction(level) {
@@ -3750,8 +3751,8 @@ function updateNotes() {
     const level = levels[currentLevelIndex];
     const topic = level && level.lessonTopic ? level.lessonTopic : null;
     const rewardText = topic && topic.reward ? topic.reward.label : "Bonus sorpresa";
-    noteGoal.textContent = `Objetivo: recolecta monedas, llega a la meta y responde el tema del nivel para desbloquear ${rewardText}. Usa Q para lanzar el latigo y alcanzar monedas lejanas.`;
-    noteLearn.textContent = topic ? `Tema del nivel: ${topic.title}` : "Aprendizajes: electronica basica y pensamiento logico.";
+    noteGoal.textContent = `Objetivo: recolecta monedas, llega a la meta y responde el tema del nivel para desbloquear ${rewardText}. Usa Q para lanzar el látigo y alcanzar monedas lejanas.`;
+    noteLearn.textContent = topic ? `Tema del nivel: ${topic.title}` : "Aprendizajes: electrónica básica y pensamiento lógico.";
   }
 }
 
@@ -3771,7 +3772,7 @@ function updateHudForPlatform() {
   const weaponHud = document.getElementById("weaponHud");
   if (weaponHud) weaponHud.classList.remove("hidden");
   const bonus = [];
-  if (shieldCharges > 0) bonus.push(`Escudo x${shieldCharges}`);
+  if (shieldTimer > 0) bonus.push(`Escudo ${Math.max(1, Math.ceil(shieldTimer / 1000))}s`);
   if (speedBoostTimer > 0) bonus.push("Turbo");
   hud.weaponText.textContent = bonus.length ? `${currentWeapon.name} | ${bonus.join(" | ")}` : currentWeapon.name;
 }
@@ -4257,7 +4258,7 @@ function startStrategyGame() {
   gameState = "playing";
   strategyLives = 3;
   speedBoostTimer = 0;
-  shieldCharges = 0;
+  shieldTimer = 0;
   const worldToStart = resumeStrategyWorld != null ? resumeStrategyWorld : 0;
   strategyWorldIndex = Math.max(0, worldToStart);
   resumeStrategyWorld = null;
@@ -4877,7 +4878,7 @@ function startGame() {
   resetKeys();
   lives = 3;
   speedBoostTimer = 0;
-  shieldCharges = 0;
+  shieldTimer = 0;
   pendingShortcut = 0;
   pendingCoinBonus = 0;
   currentLevelIndex = selectedStartLevel;
@@ -4902,7 +4903,7 @@ function startAdventureGame() {
   resetKeys();
   lives = 3;
   speedBoostTimer = 0;
-  shieldCharges = 0;
+  shieldTimer = 0;
   pendingShortcut = 0;
   pendingCoinBonus = 0;
   currentLevelIndex = 0;
@@ -4993,11 +4994,11 @@ function generateDynamicQuestion(topic, mode) {
     const optionA = `Aplicar ${title}`;
     return {
       type: "multiple",
-      prompt: `Reto nuevo ${serial}: ${title}. ¿Que opcion se relaciona mejor con el tema?`,
+      prompt: `Reto nuevo ${serial}: ${title}. ¿Qué opción se relaciona mejor con el tema?`,
       code: `Tema: ${title}`,
-      options: [optionA, "Responder al azar", "Ignorar las instrucciones"],
+      options: [optionA, "Responder al azar", "Ignorar las instrucciónes"],
       expectedIndex: 0,
-      hint: `Elige la opcion que conecta con ${title.toLowerCase()}.`,
+      hint: `Elige la opción que conecta con ${title.toLowerCase()}.`,
       expected: "",
       expectedKeywords: hintKeywords,
       acceptedAnswers: [],
@@ -5266,8 +5267,10 @@ function applyChallengeReward(level, reward) {
     speedBoostTimer = Math.max(speedBoostTimer, Math.max(6000, Number(reward.value) || 10000));
     showToast(`Recompensa: ${reward.label || "Turbo"} activo`);
   } else if (reward.type === "shield") {
-    shieldCharges += Math.max(1, Number(reward.value) || 1);
-    showToast(`Recompensa: ${reward.label || "Escudo"} listo`);
+    const rewardAmount = Math.max(1, Number(reward.value) || 1);
+    const shieldMs = Math.max(3000, rewardAmount * SHIELD_BASE_TIME);
+    shieldTimer = Math.min(60000, shieldTimer + shieldMs);
+    showToast(`Recompensa: ${reward.label || "Escudo"} activo (${Math.ceil(shieldMs / 1000)}s)`);
   } else if (reward.type === "weapon" && reward.value) {
     unlockWeapon(reward.value);
   }
@@ -5692,8 +5695,7 @@ function updateEnemyProjectiles(level) {
     }
     if (rectsIntersect(player, proj)) {
       enemyProjectiles.splice(i, 1);
-      if (shieldCharges > 0) {
-        shieldCharges -= 1;
+      if (shieldTimer > 0) {
         showToast("Escudo activado");
         continue;
       }
@@ -5823,8 +5825,7 @@ function checkEnemies(level) {
     if (enemy.spawnDelay && !enemy.active) continue;
     const enemyBox = { x: enemy.x, y: enemy.y, w: enemy.w, h: enemy.h };
     if (rectsIntersect(player, enemyBox)) {
-      if (shieldCharges > 0) {
-        shieldCharges -= 1;
+      if (shieldTimer > 0) {
         showToast("Escudo activado");
         enemy.alive = false;
         continue;
@@ -5991,7 +5992,7 @@ function drawPlayer() {
     ctx.scale(-1, 1);
   }
   ctx.drawImage(img, 0, 0, player.w, player.h);
-  if (shieldCharges > 0) {
+  if (shieldTimer > 0) {
     ctx.strokeStyle = "rgba(120, 230, 255, 0.9)";
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -6528,6 +6529,7 @@ function update(delta) {
   if (whipVisualTimer <= 0) whipTarget = null;
   heldItemTimer = Math.max(0, heldItemTimer - delta);
   speedBoostTimer = Math.max(0, speedBoostTimer - delta);
+  shieldTimer = Math.max(0, shieldTimer - delta);
   if (gameState !== "playing") {
     heldItemTimer = 0;
     attackTimer = 0;
@@ -6900,7 +6902,7 @@ if (editor.applyBtn && editor.text) {
       setLevels(parsed, { save: true });
       setEditorStatus("Cambios aplicados. Pulsa Jugar para probar.");
     } catch (err) {
-      setEditorStatus("JSON invalido. Revisa comas y llaves.");
+      setEditorStatus("JSON inválido. Revisa comas y llaves.");
     }
   });
 }
