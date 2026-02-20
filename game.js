@@ -1258,7 +1258,7 @@ function buildGeneratedLevels(startIndex, count) {
   return generated;
 }
 
-const MIN_LEVELS = 16;
+const MIN_LEVELS = 20;
 if (defaultLevels.length < MIN_LEVELS) {
   const extraCount = MIN_LEVELS - defaultLevels.length;
   const generated = buildGeneratedLevels(defaultLevels.length, extraCount);
@@ -1920,6 +1920,8 @@ const usedChallengePromptKeys = new Set();
 let generatedQuestionSerial = 0;
 let randomEnemySpawnTimer = 0;
 let nextRandomEnemySpawnMs = 2800;
+let shieldToastCooldown = 0;
+let lastPlatformHudText = "";
 let blocklyWorkspace = null;
 let blocklyLoadPromise = null;
 let builderStageCtx = null;
@@ -1963,6 +1965,13 @@ const HELD_ITEM_SIZE = 28;
 const ATTACK_VIS_TIME = 160;
 const ENEMY_SHOT_BASE_COOLDOWN = 1400;
 const SHIELD_BASE_TIME = 5000;
+const MAX_FRAME_DELTA = 50;
+const MAX_PROJECTILES = 140;
+const MAX_ENEMY_PROJECTILES = 220;
+const SHIELD_TOAST_COOLDOWN = 320;
+const LIFE_ORB_SIZE = 34;
+const LIFE_ORB_CHANCE = 0.36;
+const LIFE_ORB_MIN_LEVEL = 1;
 
 const DASH_SPEED = 9;
 const DASH_TIME = 140;
@@ -3549,8 +3558,8 @@ function applyPlatformSessionVariation(levelsList) {
   });
 }
 
-function buildPlatformMarathonLevel(levelIndex) {
-  const rng = createPlatformVariationRng(levelIndex, 53);
+function buildPlatformMarathonLevel(levelIndex, salt = 53) {
+  const rng = createPlatformVariationRng(levelIndex, salt);
   const width = 3800 + levelIndex * 220 + randomInt(0, 440, rng);
   const platforms = [{ x: 0, y: 480, w: width, h: 60 }];
   const cols = 14 + Math.min(14, Math.floor(levelIndex / 2));
@@ -3649,6 +3658,34 @@ function buildPlatformMarathonLevel(levelIndex) {
       },
     },
   };
+}
+
+function isPlatformLevelValid(level) {
+  if (!level || typeof level !== "object") return false;
+  if (!Number.isFinite(level.width) || level.width < 1200) return false;
+  if (!level.spawn || !level.goal) return false;
+  if (!Number.isFinite(level.spawn.x) || !Number.isFinite(level.spawn.y)) return false;
+  if (!Number.isFinite(level.goal.x) || !Number.isFinite(level.goal.y)) return false;
+  if (!Array.isArray(level.platforms) || level.platforms.length < 6) return false;
+  if (!Array.isArray(level.coins) || level.coins.length < 6) return false;
+  if (!Array.isArray(level.enemies) || level.enemies.length < 2) return false;
+  if (level.spawn.x < 0 || level.spawn.x > level.width - 40) return false;
+  if (level.goal.x < 80 || level.goal.x > level.width - 20) return false;
+
+  const hasGround = level.platforms.some((p) => p && Number.isFinite(p.y) && p.y >= 470 && p.h >= 40);
+  const hasGoalZone = level.platforms.some((p) => p && Number.isFinite(p.x) && Number.isFinite(p.w) && p.x + p.w >= level.goal.x - 40);
+  return hasGround && hasGoalZone;
+}
+
+function buildValidatedMarathonLevel(levelIndex) {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const candidate = buildPlatformMarathonLevel(levelIndex, 53 + attempt * 11);
+    if (isPlatformLevelValid(candidate)) return candidate;
+  }
+  const fallback = buildGeneratedLevels(levelIndex, 1)[0];
+  fallback.name = `Maraton ${levelIndex + 1}`;
+  fallback.displayLevelNumber = levelIndex + 1;
+  return fallback;
 }
 
 function ensureStrategyLevel(index) {
@@ -3762,6 +3799,7 @@ function updateHudForStrategy() {
   hud.coinTotal.textContent = strategyTotalGems;
   hud.livesText.textContent = strategyLives;
   hud.weaponText.textContent = `Power-up x${strategyPowerupCharges} (X)`;
+  lastPlatformHudText = "";
   const icon = assets.images.orbe || assets.images.crystal_b || assets.images.weapon_pistol_icon;
   if (icon) hud.weaponIcon.src = icon.src;
   const weaponHud = document.getElementById("weaponHud");
@@ -3774,7 +3812,11 @@ function updateHudForPlatform() {
   const bonus = [];
   if (shieldTimer > 0) bonus.push(`Escudo ${Math.max(1, Math.ceil(shieldTimer / 1000))}s`);
   if (speedBoostTimer > 0) bonus.push("Turbo");
-  hud.weaponText.textContent = bonus.length ? `${currentWeapon.name} | ${bonus.join(" | ")}` : currentWeapon.name;
+  const nextText = bonus.length ? `${currentWeapon.name} | ${bonus.join(" | ")}` : currentWeapon.name;
+  if (nextText !== lastPlatformHudText) {
+    hud.weaponText.textContent = nextText;
+    lastPlatformHudText = nextText;
+  }
 }
 
 function setupStrategyLevel(index) {
@@ -4259,6 +4301,7 @@ function startStrategyGame() {
   strategyLives = 3;
   speedBoostTimer = 0;
   shieldTimer = 0;
+  lastPlatformHudText = "";
   const worldToStart = resumeStrategyWorld != null ? resumeStrategyWorld : 0;
   strategyWorldIndex = Math.max(0, worldToStart);
   resumeStrategyWorld = null;
@@ -4386,6 +4429,7 @@ function prepareLevels(list, baseIndex = 0) {
     level.displayLevelNumber = getPlatformLevelNumber(level, index);
     level.platforms = level.platforms || [];
     level.coins = level.coins || [];
+    level.orbs = level.orbs || [];
     level.enemies = level.enemies || [];
     improvePlatformFlow(level, index);
     level.scene = platformScenes[index % platformScenes.length];
@@ -4406,6 +4450,7 @@ function prepareLevels(list, baseIndex = 0) {
       fixCoinPlacement(level);
       boostIntroLevel(level);
     }
+    addLifeOrbForLevel(level, index);
     if (typeof level.coinGoal !== "number" || Number.isNaN(level.coinGoal)) {
       const coinCount = level.coins.length;
       if (coinCount <= 1) {
@@ -4428,6 +4473,7 @@ function prepareLevels(list, baseIndex = 0) {
       enemy.lockToPlatform = enemy.minX != null && enemy.maxX != null && enemy.y < 440;
     });
     level.initialCoins = level.coins.map((coin) => ({ ...coin }));
+    level.initialOrbs = level.orbs.map((orb) => ({ ...orb }));
     level.initialEnemies = level.enemies.map((enemy) => ({ ...enemy }));
   });
 }
@@ -4631,6 +4677,47 @@ function fixCoinPlacement(level) {
   });
 }
 
+function addLifeOrbForLevel(level, index) {
+  if (!level) return;
+  if (!Array.isArray(level.platforms)) {
+    level.orbs = [];
+    return;
+  }
+  if (Array.isArray(level.orbs) && level.orbs.length) {
+    level.orbs = level.orbs.slice(0, 1).map((orb) => ({
+      x: clamp(orb.x, 20, Math.max(24, (level.width || 1800) - 80)),
+      y: clamp(orb.y, 30, 430),
+      life: Math.max(1, Number(orb.life) || 1),
+    }));
+    return;
+  }
+  if (index < LIFE_ORB_MIN_LEVEL) {
+    level.orbs = [];
+    return;
+  }
+
+  const rng = createPlatformVariationRng(index, 91);
+  const spawnChance = index >= 8 ? LIFE_ORB_CHANCE + 0.1 : LIFE_ORB_CHANCE;
+  if (rng() > Math.min(0.6, spawnChance)) {
+    level.orbs = [];
+    return;
+  }
+
+  const candidates = level.platforms
+    .filter((p) => p && p.h <= 24 && p.y >= 170 && p.y <= 430 && p.x > 80 && p.x < (level.width || 1800) - 220)
+    .sort((a, b) => a.x - b.x);
+  if (!candidates.length) {
+    level.orbs = [];
+    return;
+  }
+
+  const anchor = candidates[Math.floor(rng() * candidates.length)];
+  const orbX = clamp(anchor.x + anchor.w / 2 - LIFE_ORB_SIZE / 2, 20, (level.width || 1800) - 80);
+  const orbY = clamp(anchor.y - 58, 30, 430);
+  const nearCoin = (level.coins || []).some((coin) => Math.hypot(coin.x - orbX, coin.y - orbY) < 56);
+  level.orbs = nearCoin ? [] : [{ x: orbX, y: orbY, life: 1 }];
+}
+
 function setRuntimeLevels(newLevels) {
   levels = cloneData(newLevels);
   if (activeGame === "platform" && platformSessionSeed) {
@@ -4785,6 +4872,7 @@ function resetLevel() {
   randomEnemySpawnTimer = 0;
   scheduleNextRandomEnemySpawn(currentLevelIndex);
   level.coins = level.initialCoins.map((coin) => ({ ...coin }));
+  level.orbs = (level.initialOrbs || []).map((orb) => ({ ...orb }));
   level.enemies = level.initialEnemies.map((enemy) => ({
     ...enemy,
     alive: true,
@@ -4835,10 +4923,17 @@ function showToast(message, duration = 1800) {
   }, duration);
 }
 
+function notifyShieldActivated() {
+  if (shieldToastCooldown > 0) return;
+  shieldToastCooldown = SHIELD_TOAST_COOLDOWN;
+  showToast("Escudo activado");
+}
+
 function updateWeaponHud() {
   const icon = assets.images[currentWeapon.icon];
   if (icon) hud.weaponIcon.src = icon.src;
   hud.weaponText.textContent = currentWeapon.name;
+  lastPlatformHudText = currentWeapon.name;
 }
 
 function setWeapon(id) {
@@ -4879,6 +4974,7 @@ function startGame() {
   lives = 3;
   speedBoostTimer = 0;
   shieldTimer = 0;
+  lastPlatformHudText = "";
   pendingShortcut = 0;
   pendingCoinBonus = 0;
   currentLevelIndex = selectedStartLevel;
@@ -4904,6 +5000,7 @@ function startAdventureGame() {
   lives = 3;
   speedBoostTimer = 0;
   shieldTimer = 0;
+  lastPlatformHudText = "";
   pendingShortcut = 0;
   pendingCoinBonus = 0;
   currentLevelIndex = 0;
@@ -5226,7 +5323,7 @@ function completeChallenge() {
   } else {
     if (activeGame === "platform") {
       const nextIndex = levels.length;
-      const nextLevel = buildPlatformMarathonLevel(nextIndex);
+      const nextLevel = buildValidatedMarathonLevel(nextIndex);
       prepareLevels([nextLevel], nextIndex);
       levels.push(nextLevel);
       currentLevelIndex += 1;
@@ -5587,6 +5684,9 @@ function attemptAttack() {
       vx: currentWeapon.speed * player.facing,
     };
     projectiles.push(proj);
+    if (projectiles.length > MAX_PROJECTILES) {
+      projectiles.splice(0, projectiles.length - MAX_PROJECTILES);
+    }
     if (currentWeapon.sound) playSound(currentWeapon.sound);
   }
 }
@@ -5696,7 +5796,7 @@ function updateEnemyProjectiles(level) {
     if (rectsIntersect(player, proj)) {
       enemyProjectiles.splice(i, 1);
       if (shieldTimer > 0) {
-        showToast("Escudo activado");
+        notifyShieldActivated();
         continue;
       }
       loseLife();
@@ -5794,15 +5894,19 @@ function updateEnemies(level, delta) {
 }
 
 function spawnEnemyProjectile(enemy, dir) {
+  const shotDir = dir === 0 ? (enemy.vx >= 0 ? 1 : -1) : dir;
   const size = { w: 16, h: 8 };
   enemyProjectiles.push({
-    x: enemy.x + (dir >= 0 ? enemy.w : -size.w),
+    x: enemy.x + (shotDir >= 0 ? enemy.w : -size.w),
     y: enemy.y + enemy.h / 2 - size.h / 2,
     w: size.w,
     h: size.h,
-    vx: 5.2 * dir,
+    vx: 5.2 * shotDir,
     vy: 0,
   });
+  if (enemyProjectiles.length > MAX_ENEMY_PROJECTILES) {
+    enemyProjectiles.splice(0, enemyProjectiles.length - MAX_ENEMY_PROJECTILES);
+  }
 }
 
 function checkCoins(level) {
@@ -5819,6 +5923,21 @@ function checkCoins(level) {
   }
 }
 
+function checkLifeOrbs(level) {
+  if (!level || !Array.isArray(level.orbs) || !level.orbs.length) return;
+  for (let i = level.orbs.length - 1; i >= 0; i -= 1) {
+    const orb = level.orbs[i];
+    const orbBox = { x: orb.x, y: orb.y, w: LIFE_ORB_SIZE, h: LIFE_ORB_SIZE };
+    if (!rectsIntersect(player, orbBox)) continue;
+    level.orbs.splice(i, 1);
+    const gain = Math.max(1, Number(orb.life) || 1);
+    lives += gain;
+    hud.livesText.textContent = lives;
+    showToast(`Orbe vital: +${gain} vida`);
+    playSound("success");
+  }
+}
+
 function checkEnemies(level) {
   for (const enemy of level.enemies) {
     if (!enemy.alive) continue;
@@ -5826,7 +5945,7 @@ function checkEnemies(level) {
     const enemyBox = { x: enemy.x, y: enemy.y, w: enemy.w, h: enemy.h };
     if (rectsIntersect(player, enemyBox)) {
       if (shieldTimer > 0) {
-        showToast("Escudo activado");
+        notifyShieldActivated();
         enemy.alive = false;
         continue;
       }
@@ -6181,6 +6300,19 @@ function drawCoins(level) {
   }
 }
 
+function drawLifeOrbs(level) {
+  if (!level || !Array.isArray(level.orbs) || !level.orbs.length) return;
+  const orbImg = assets.images.orbe || assets.images.crystal_b || assets.images.crystal_a;
+  if (!orbImg) return;
+  const pulse = 0.92 + Math.sin(coinTimer * 0.01) * 0.08;
+  for (const orb of level.orbs) {
+    const size = LIFE_ORB_SIZE * pulse;
+    const dx = orb.x - cameraX + (LIFE_ORB_SIZE - size) / 2;
+    const dy = orb.y + (LIFE_ORB_SIZE - size) / 2;
+    ctx.drawImage(orbImg, dx, dy, size, size);
+  }
+}
+
 function drawGoal(level) {
   const img = assets.images.goal;
   if (!img) return;
@@ -6499,17 +6631,18 @@ function drawStrategy() {
 }
 
 function update(delta) {
-  updateSessionClock(delta);
+  const safeDelta = Math.min(MAX_FRAME_DELTA, Math.max(0, Number(delta) || 0));
+  updateSessionClock(safeDelta);
 
   if (activeGame === "strategy") {
     if (gameState !== "playing") return;
-    strategyAnimTime += delta;
-    coinTimer += delta;
+    strategyAnimTime += safeDelta;
+    coinTimer += safeDelta;
     if (coinTimer > 150) {
       coinFrame = (coinFrame + 1) % 4;
       coinTimer = 0;
     }
-    strategyMoveCooldown = Math.max(0, strategyMoveCooldown - delta);
+    strategyMoveCooldown = Math.max(0, strategyMoveCooldown - safeDelta);
     strategyPlayerRender.x += (strategyPlayer.x - strategyPlayerRender.x) * STRATEGY_ANIM_SMOOTH;
     strategyPlayerRender.y += (strategyPlayer.y - strategyPlayerRender.y) * STRATEGY_ANIM_SMOOTH;
     strategyEnemies.forEach((enemy) => {
@@ -6520,16 +6653,17 @@ function update(delta) {
   }
 
   const level = levels[currentLevelIndex];
-  attackCooldown = Math.max(0, attackCooldown - delta);
-  attackTimer = Math.max(0, attackTimer - delta);
-  dashCooldown = Math.max(0, dashCooldown - delta);
-  dashTime = Math.max(0, dashTime - delta);
-  whipCooldown = Math.max(0, whipCooldown - delta);
-  whipVisualTimer = Math.max(0, whipVisualTimer - delta);
+  attackCooldown = Math.max(0, attackCooldown - safeDelta);
+  attackTimer = Math.max(0, attackTimer - safeDelta);
+  dashCooldown = Math.max(0, dashCooldown - safeDelta);
+  dashTime = Math.max(0, dashTime - safeDelta);
+  whipCooldown = Math.max(0, whipCooldown - safeDelta);
+  whipVisualTimer = Math.max(0, whipVisualTimer - safeDelta);
   if (whipVisualTimer <= 0) whipTarget = null;
-  heldItemTimer = Math.max(0, heldItemTimer - delta);
-  speedBoostTimer = Math.max(0, speedBoostTimer - delta);
-  shieldTimer = Math.max(0, shieldTimer - delta);
+  heldItemTimer = Math.max(0, heldItemTimer - safeDelta);
+  speedBoostTimer = Math.max(0, speedBoostTimer - safeDelta);
+  shieldTimer = Math.max(0, shieldTimer - safeDelta);
+  shieldToastCooldown = Math.max(0, shieldToastCooldown - safeDelta);
   if (gameState !== "playing") {
     heldItemTimer = 0;
     attackTimer = 0;
@@ -6538,19 +6672,20 @@ function update(delta) {
     return;
   }
   updatePlayer(level);
-  updateEnemies(level, delta);
-  updateRandomEnemySpawns(level, delta);
+  updateEnemies(level, safeDelta);
+  updateRandomEnemySpawns(level, safeDelta);
   updateProjectiles(level);
   updateEnemyProjectiles(level);
-  updateHitEffects(delta);
-  updateDashTrail(delta);
+  updateHitEffects(safeDelta);
+  updateDashTrail(safeDelta);
   checkCoins(level);
+  checkLifeOrbs(level);
   checkEnemies(level);
   checkGoal(level);
   updateCamera(level);
   updateHudForPlatform();
 
-  coinTimer += delta;
+  coinTimer += safeDelta;
   if (coinTimer > 160) {
     coinFrame = (coinFrame + 1) % 4;
     coinTimer = 0;
@@ -6568,6 +6703,7 @@ function render() {
   drawBackground(level);
   drawPlatforms(level);
   drawCoins(level);
+  drawLifeOrbs(level);
   drawGoal(level);
   drawEnemies(level);
   drawProjectiles();
@@ -6579,6 +6715,7 @@ function render() {
 }
 
 function loop(timestamp) {
+  if (!lastTime) lastTime = timestamp;
   const delta = timestamp - lastTime;
   lastTime = timestamp;
   update(delta);
@@ -6874,6 +7011,7 @@ function exportLevels() {
     goal: level.goal,
     platforms: level.platforms,
     coins: level.initialCoins,
+    orbs: level.initialOrbs || [],
     enemies: level.initialEnemies,
     challenge: level.challenge,
   }));
